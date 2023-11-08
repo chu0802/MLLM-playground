@@ -9,7 +9,7 @@ dataset:
   pin_memory: True
 
 task:
-  eval_mode: vqa
+  name: vqa
   device: 0
 
   # inference
