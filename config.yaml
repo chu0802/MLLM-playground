@@ -2,8 +2,13 @@ model:
   name: blip2
   load_finetuned: False
   fine_tuned: null
+
 dataset:
-  name: ScienceQA
+  root: "/mnt/data/lvlm"
+  split: "val"
+  name: VizWiz
+  sample_num: 100
+  sample_seed: 1102
   batch_size: 32
   num_workers: 4
   pin_memory: True
