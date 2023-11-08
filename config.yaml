@@ -2,16 +2,19 @@ model:
   name: blip2
   load_finetuned: False
   fine_tuned: null
-task:
-  eval_mode: vqa
-  dataset: ScienceQA
-  device: 0
+dataset:
+  name: ScienceQA
   batch_size: 32
   num_workers: 4
+  pin_memory: True
+
+task:
+  eval_mode: vqa
+  device: 0
 
   # inference
-  max_lengths: 10
-  min_lengths: 1
+  max_len: 10
+  min_len: 1
   num_beams: 5
 
   seed: 1102
