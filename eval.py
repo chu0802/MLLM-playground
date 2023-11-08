@@ -1,13 +1,12 @@
 import os
 
 from src.utils import Config, parse_args
-from src.tasks import TASK_DICT
-from test.test_model import DummyModel
-from test.test_eval import DummyVQAEval
+from src.tasks import get_task
 import logging
 import sys
-from src.datasets import DATASET_DICT
-from src.models import MODEL_DICT
+from src.datasets import get_dataset
+from src.models import get_model
+from src.evaluater import get_evaluater
 from src.datasets.utils import sample_dataset
 
 log_format = """[%(levelname)s] [%(asctime)s] %(message)s"""
@@ -18,17 +17,18 @@ def main(config):
     logging.info("Start Inference")
     os.environ["CUDA_VISIBLE_DEVICES"] = str(config.task.device)
 
-    task = TASK_DICT[config.task.name](config)
+    task = get_task(config.task.name)(config)
+    model = get_model(config.model.name)(config)
+    eval_cls = get_evaluater(config.dataset.name)
 
-    model = MODEL_DICT[config.model.name](config)
     dataset = sample_dataset(
-        DATASET_DICT[config.dataset.name](config),
+        get_dataset(config.dataset.name)(config),
         config.dataset.sample_num,
         config.dataset.sample_seed,
     )
     dataloader = task.build_dataloader(dataset)
 
-    score = task.evaluate(model, dataloader, eval_cls=DummyVQAEval)
+    score = task.evaluate(model, dataloader, eval_cls=eval_cls)
 
     logging.info(
         f"Model: {config.model.name} | Dataset: {config.dataset.name} | Result: {score}"
