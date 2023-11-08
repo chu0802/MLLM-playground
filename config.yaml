@@ -1,0 +1,20 @@
+model:
+  name: blip2
+  load_finetuned: False
+  fine_tuned: null
+task:
+  eval_mode: vqa
+  dataset: ScienceQA
+  device: 0
+  batch_size: 32
+  num_workers: 4
+
+  # inference
+  max_lengths: 10
+  min_lengths: 1
+  num_beams: 5
+
+  seed: 1102
+  output_dir: "output"
+
+  evaluate: True
