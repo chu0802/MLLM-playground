@@ -30,6 +30,10 @@ def parse_args():
     return args
 
 
+def get_config():
+    return Config(parse_args()).config
+
+
 if __name__ == "__main__":
-    config = Config(parse_args())
-    print(config.config)
+    config = get_config()
+    print(config)

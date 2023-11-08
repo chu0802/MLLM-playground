@@ -6,8 +6,8 @@ model:
 
 dataset:
   root: "/mnt/data/lvlm"
-  split: "val"
-  name: VizWiz
+  split: "test"
+  name: TextVQA
   sample_num: -1
   sample_seed: 1102
   batch_size: 32
@@ -26,4 +26,4 @@ task:
   seed: 1102
   output_dir: "output"
 
-  prompt: "Question: {} Short answer:"
+  prompt: "Question: {} Answer:"

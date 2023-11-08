@@ -1,6 +1,6 @@
 import os
 
-from src.utils import Config, parse_args
+from src.utils import get_config
 from src.tasks import get_task
 import logging
 import sys
@@ -36,4 +36,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main(Config(parse_args()).config)
+    main(get_config())

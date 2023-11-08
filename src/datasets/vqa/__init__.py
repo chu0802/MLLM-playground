@@ -22,10 +22,11 @@ class BaseVQADataset(Dataset):
         self.data_root = (
             Path(config.dataset.root) / "VQA_Datasets" / config.dataset.name
         )
-        self.load_data(config.dataset.split)
+        self.split = config.dataset.split
+        self.load_data()
 
     @abstractmethod
-    def load_data(self, split):
+    def load_data(self):
         raise NotImplementedError
 
     def __len__(self):

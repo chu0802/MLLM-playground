@@ -1,4 +1,4 @@
-from src.utils import Config, parse_args
+from src.utils import get_config
 from src.tasks.vqa import VQATask
 from test.test_model import DummyModel
 from test.test_dataset import DummyVQADataset
@@ -6,7 +6,7 @@ from test.test_eval import DummyVQAEval
 
 
 def test_vqa_task():
-    config = Config(parse_args()).config
+    config = get_config()
     vqa_task = VQATask(config)
 
     model = DummyModel()
