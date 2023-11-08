@@ -1,7 +1,8 @@
 model:
-  name: blip2
+  name: Blip2
   load_finetuned: False
   fine_tuned: null
+  evaluate: True
 
 dataset:
   root: "/mnt/data/lvlm"
@@ -24,5 +25,3 @@ task:
 
   seed: 1102
   output_dir: "output"
-
-  evaluate: True

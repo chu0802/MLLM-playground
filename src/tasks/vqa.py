@@ -67,7 +67,7 @@ class VQATask(BaseTask):
         super().__init__(config)
 
     def evaluate_step(self, model, batch):
-        outputs = model.batch_generate(
+        outputs = model.generate(
             batch["image"],
             batch["question"],
             max_len=self.config.task.max_len,

@@ -7,6 +7,7 @@ from test.test_eval import DummyVQAEval
 import logging
 import sys
 from src.datasets import DATASET_DICT
+from src.models import MODEL_DICT
 from src.datasets.utils import sample_dataset
 
 log_format = """[%(levelname)s] [%(asctime)s] %(message)s"""
@@ -19,7 +20,7 @@ def main(config):
 
     task = TASK_DICT[config.task.name](config)
 
-    model = DummyModel()
+    model = MODEL_DICT[config.model.name](config)
     dataset = sample_dataset(
         DATASET_DICT[config.dataset.name](config),
         config.dataset.sample_num,
