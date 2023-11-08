@@ -68,7 +68,7 @@ class VQATask(BaseTask):
 
     def evaluate_step(self, model, batch):
         outputs = model.batch_generate(
-            batch["image_path"],
+            batch["image"],
             batch["question"],
             max_len=self.config.task.max_len,
             min_len=self.config.task.min_len,
@@ -78,12 +78,12 @@ class VQATask(BaseTask):
         return [
             {
                 "question": question,
-                "answer": output,
-                "gt_answers": gt_answer,
+                "pred_answer": output,
+                "answers": answer,
                 "image_path": image_path,
             }
-            for question, output, gt_answer, image_path in zip(
-                batch["question"], outputs, batch["gt_answers"], batch["image_path"]
+            for question, output, answer, image_path in zip(
+                batch["question"], outputs, batch["answers"], batch["image_path"]
             )
         ]
 
@@ -92,7 +92,7 @@ class VQATask(BaseTask):
 
         correct = 0
         for res in results:
-            eval_res = evaluater.evaluate(res["answer"], res["gt_answers"])
+            eval_res = evaluater.evaluate(res["pred_answer"], res["answers"])
             res["correct"] = eval_res
             correct += eval_res
 

@@ -1,21 +1,13 @@
 import os
 
-# import json
-import datetime
-
-# from functools import partial
-
-# import torch
-# import numpy as np
-
-# import utils
 from src.utils import Config, parse_args
 from src.tasks import TASK_DICT
 from test.test_model import DummyModel
-from test.test_dataset import DummyVQADataset
 from test.test_eval import DummyVQAEval
 import logging
 import sys
+from src.datasets import DATASET_DICT
+from src.datasets.utils import sample_dataset
 
 log_format = """[%(levelname)s] [%(asctime)s] %(message)s"""
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format=log_format)
@@ -28,7 +20,11 @@ def main(config):
     task = TASK_DICT[config.task.name](config)
 
     model = DummyModel()
-    dataset = DummyVQADataset()
+    dataset = sample_dataset(
+        DATASET_DICT[config.dataset.name](config),
+        config.dataset.sample_num,
+        config.dataset.sample_seed,
+    )
     dataloader = task.build_dataloader(dataset)
 
     score = task.evaluate(model, dataloader, eval_cls=DummyVQAEval)
