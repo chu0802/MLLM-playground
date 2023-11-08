@@ -25,3 +25,5 @@ task:
 
   seed: 1102
   output_dir: "output"
+
+  prompt: "Question: {} Short answer:"

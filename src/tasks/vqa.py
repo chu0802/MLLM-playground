@@ -54,7 +54,6 @@ class BaseTask:
         for batch in tqdm(dataloader, desc="Evaluation"):
             eval_output = self.evaluate_step(model, batch)
             results += eval_output
-
         score = self._eval_metrics(results, eval_cls)
 
         self._dump_results(results, score)
@@ -65,6 +64,7 @@ class BaseTask:
 class VQATask(BaseTask):
     def __init__(self, config):
         super().__init__(config)
+        self.prompt = config.task.prompt
 
     def evaluate_step(self, model, batch):
         outputs = model.generate(
@@ -73,6 +73,7 @@ class VQATask(BaseTask):
             max_len=self.config.task.max_len,
             min_len=self.config.task.min_len,
             num_beams=self.config.task.num_beams,
+            prompt=self.prompt,
         )
 
         return [
