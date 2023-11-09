@@ -1,17 +1,17 @@
 from src.evaluater.parse_tokens import has_word, equivalent
+from src.evaluater.base import BaseEvaluater
 
 
-class VQAEval:
-    def __init__(self):
-        pass
-
+class VQAEvaluater(BaseEvaluater):
     def evaluate(self, answer, gt_answers):
         if type(gt_answers) == list:
             return any([has_word(answer, gt_answer) for gt_answer in gt_answers])
         else:
             return has_word(answer, gt_answers)
 
-    def evaluate_MRR(self, answer, gt_answers):
+
+class MrrEvaluater(BaseEvaluater):
+    def evaluate(self, answer, gt_answers):
         assert type(gt_answers) == list
         for i in range(len(gt_answers)):
             if has_word(answer, gt_answers[i]):
@@ -19,7 +19,15 @@ class VQAEval:
         return 0.0
 
 
-class ScienceQAEval(VQAEval):
+class ScienceQAEvaluater(BaseEvaluater):
     def evaluate(self, answer, gt_answers):
         gt_choice, gt_direct_answer = gt_answers.split(") ")
         return equivalent(answer, gt_choice) or has_word(answer, gt_direct_answer)
+
+
+class VQAV2Evaluater(BaseEvaluater):
+    def evaluate(self, answer, gt_answers):
+        assert type(gt_answers) == list
+        return min(
+            sum([has_word(answer, gt_answer) for gt_answer in gt_answers]) / 3, 1
+        )

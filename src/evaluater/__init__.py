@@ -1,14 +1,16 @@
-from src.evaluater.vqa import VQAEval, ScienceQAEval
+from src.evaluater.vqa import VQAEvaluater, VQAV2Evaluater, ScienceQAEvaluater
 
 __all__ = [
-    "VQAEval",
-    "ScienceQAEval",
+    "VQAEvaluater",
+    "VQAV2Evaluater",
+    "ScienceQAEvaluater",
 ]
 
 EVALUATER_DICT = {
-    "ScienceQA": ScienceQAEval,
+    "ScienceQA": ScienceQAEvaluater,
+    "VizWiz": VQAV2Evaluater,
 }
 
 
 def get_evaluater(dataset_name):
-    return EVALUATER_DICT.get(dataset_name, VQAEval)
+    return EVALUATER_DICT.get(dataset_name, VQAEvaluater)
