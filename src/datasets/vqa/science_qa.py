@@ -58,7 +58,7 @@ class ScienceQADataset(BaseVQADataset):
 
 
 if __name__ == "__main__":
-    from src.utils import get_config
+    from config import get_config
 
     config = get_config()
     science_qa = ScienceQADataset(config)

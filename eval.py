@@ -1,6 +1,6 @@
 import os
 
-from src.utils import get_config
+from config import get_config
 from src.tasks import get_task
 import logging
 import sys
