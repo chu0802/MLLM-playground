@@ -1,4 +1,4 @@
-from config import get_config
+from utils.config import get_config
 from src.tasks.vqa import VQATask
 from test.test_model import DummyModel
 from test.test_dataset import DummyVQADataset
