@@ -15,14 +15,14 @@ def get_image(image):
 
 
 class BaseVQADataset(Dataset):
-    def __init__(self, config):
+    def __init__(self, config, split):
         self.image_path_list = []
         self.question_list = []
         self.answer_list = []
         self.data_root = (
             Path(config.dataset.root) / "VQA_Datasets" / config.dataset.name
         )
-        self.split = config.dataset.split
+        self.split = split
         self.load_data()
 
     @abstractmethod

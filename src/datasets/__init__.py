@@ -10,5 +10,5 @@ DATASET_DICT = {
 }
 
 
-def get_dataset(dataset_name):
-    return DATASET_DICT[dataset_name]
+def get_dataset(config, split):
+    return DATASET_DICT[config.dataset.name](config, split)
