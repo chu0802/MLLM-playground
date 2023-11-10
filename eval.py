@@ -1,14 +1,15 @@
 import os
 
-from utils.config import get_config
+from src.utils.config import get_config
 from src.tasks import get_task
 import logging
 import sys
 from src.datasets import get_dataset
 from src.models import get_model
 from src.evaluater import get_evaluater
-from src.datasets.utils import sample_dataset
+from src.datasets.utils import get_dataloaders
 from src.utils.seed import setup_seeds
+from src.trainer.trainer import Trainer
 
 log_format = """[%(levelname)s] [%(asctime)s] %(message)s"""
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format=log_format)
@@ -20,18 +21,14 @@ def main(config):
     logging.info("Start Inference")
     os.environ["CUDA_VISIBLE_DEVICES"] = str(config.task.device)
 
-    task = get_task(config.task.name)(config)
-    model = get_model(config.model.name)(config)
-    eval_cls = get_evaluater(config.dataset.name)
+    task = get_task(config)
+    model = get_model(config)
+    dataloaders = get_dataloaders(config)
+    evaluater = get_evaluater(config.dataset.name)
 
-    dataset = sample_dataset(
-        get_dataset(config.dataset.name)(config),
-        config.dataset.sample_num,
-        config.dataset.sample_seed,
-    )
-    dataloader = task.build_dataloader(dataset)
+    trainer = Trainer(task, model, dataloaders, config)
 
-    score = task.evaluate(model, dataloader, eval_cls=eval_cls)
+    score = trainer.evaluate(evaluater)
 
     logging.info(
         f"Model: {config.model.name} | Dataset: {config.dataset.name} | Result: {score}"

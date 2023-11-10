@@ -5,5 +5,5 @@ TASK_DICT = {
 }
 
 
-def get_task(task_name):
-    return TASK_DICT[task_name]
+def get_task(config):
+    return TASK_DICT[config.task.name](config)

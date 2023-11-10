@@ -28,9 +28,7 @@ class VQATask(BaseTask):
             )
         ]
 
-    def _eval_metrics(self, results, eval_cls):
-        evaluater = eval_cls()
-
+    def _eval_metrics(self, results, evaluater):
         correct = 0
         for res in results:
             eval_res = evaluater.evaluate(res["pred_answer"], res["answers"])

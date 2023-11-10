@@ -13,4 +13,4 @@ EVALUATER_DICT = {
 
 
 def get_evaluater(dataset_name):
-    return EVALUATER_DICT.get(dataset_name, VQAEvaluater)
+    return EVALUATER_DICT.get(dataset_name, VQAEvaluater)()
