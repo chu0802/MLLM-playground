@@ -25,9 +25,16 @@ def main(config):
     task = get_task(config)
     model = get_model(config)
     dataloaders = get_dataloaders(config)
+    evaluater = get_evaluater(config.dataset.name)
+
     trainer = Trainer(task, model, dataloaders, config)
 
     trainer.train()
+    score = trainer.evaluate(evaluater)
+
+    logging.info(
+        f"Model: {config.model.name} | Dataset: {config.dataset.name} | Result: {score}"
+    )
 
 
 if __name__ == "__main__":
