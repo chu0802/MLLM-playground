@@ -1,10 +1,8 @@
-from src.datasets.vqa import BaseVQADataset
+from src.datasets.vqa import BaseMultiAnswersVQADataset
 import json
 
 
-class DocVQADataset(BaseVQADataset):
-    _multi_answers = True
-
+class DocVQADataset(BaseMultiAnswersVQADataset):
     def load_data(self):
         ann_path = self.data_root / f"{self.split}_v1.0.json"
         data = json.load(open(ann_path, "r"))["data"]

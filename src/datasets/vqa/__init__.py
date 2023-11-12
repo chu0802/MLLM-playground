@@ -15,7 +15,7 @@ def get_image(image):
         raise NotImplementedError(f"Invalid type of image: {type(image)}")
 
 
-class BaseVQADataset(Dataset):
+class BaseCustomVQADataset(Dataset):
     def __init__(self, config, split):
         self.image_path_list = []
         self.question_list = []
@@ -24,7 +24,6 @@ class BaseVQADataset(Dataset):
             Path(config.dataset.root) / "VQA_Datasets" / config.dataset.name
         )
         self.split = split
-        self.load_data()
 
     def parse_answer(self, answers):
         answer_weight = defaultdict(float)
@@ -36,10 +35,6 @@ class BaseVQADataset(Dataset):
             "answers": list(answer_weight.keys()),
             "weights": list(answer_weight.values()),
         }
-
-    @property
-    def multi_answers(self):
-        return self._multi_answers
 
     @abstractmethod
     def load_data(self):
@@ -59,3 +54,22 @@ class BaseVQADataset(Dataset):
             "answers": answer_weight["answers"],
             # "weights": answer_weight["weights"],
         }
+
+
+class BaseMCQCustomDataset(BaseCustomVQADataset):
+    def __init__(self, config, split):
+        super().__init__(config, split)
+        self.options = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        self.direct_answer_list = []
+
+
+class BaseVQADataset(BaseCustomVQADataset):
+    def __init__(self, config, split):
+        super().__init__(config, split)
+        self.load_data()
+
+
+class BaseMultiAnswersVQADataset(BaseVQADataset):
+    def __getitem__(self, idx):
+        samples = super().__getitem__(idx)
+        samples["n_answers"] = len(samples["answers"])

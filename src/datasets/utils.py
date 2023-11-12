@@ -7,18 +7,9 @@ from functools import partial
 from collections import defaultdict
 
 
-def default_train_collater(batch, multi_answers=False):
-    return_dict = defaultdict(list)
-
-    for key in batch[0]:
-        for dict in batch:
-            if key in ["answers", "weights"]:
-                return_dict[key] += dict[key]
-            else:
-                return_dict[key].append(dict[key])
-
-    if multi_answers:
-        return_dict["n_answers"] += [len(dict["answers"]) for dict in batch]
+def default_collater(batch):
+    return_dict = {key: [dict[key] for dict in batch] for key in batch[0]}
+    return_dict["answers"] = list(chain(*return_dict["answers"]))
     return return_dict
 
 
@@ -38,7 +29,7 @@ def build_dataloader(
         pin_memory=pin_memory,
         shuffle=shuffle,
         drop_last=drop_last,
-        collate_fn=partial(default_train_collater, multi_answers=dataset.multi_answers),
+        collate_fn=default_collater,
     )
 
 
@@ -46,7 +37,7 @@ def get_dataloaders(config):
     dataloaders = {}
     for split_type, split_config_dict in config.dataset.split.items():
         dataset = sample_dataset(
-            get_dataset(config, split_config_dict.name),
+            get_dataset(config, split_type),
             config.dataset.sample_num,
             config.dataset.sample_seed,
         )
@@ -80,3 +71,13 @@ def prepare_sample(samples):
     samples = apply_to_sample(lambda x: x.cuda(), samples)
 
     return samples
+
+
+if __name__ == "__main__":
+    from src.utils.config import get_config
+
+    config = get_config()
+    dataloaders = get_dataloaders(config)
+    for batch in dataloaders["train"]:
+        print(batch)
+        pass

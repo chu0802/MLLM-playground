@@ -72,7 +72,7 @@ class Blip2(BaseModel):
     def generate(
         self, images, questions, max_len=30, min_len=1, num_beams=5, prompt=None
     ):
-        images = self.parse_images(self, images)
+        images = self.parse_images(images)
         input_prompts = self.parse_text_input(questions, prompt)
 
         answer = self.model.generate(

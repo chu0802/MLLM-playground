@@ -1,10 +1,8 @@
-from src.datasets.vqa import BaseVQADataset
+from src.datasets.vqa import BaseMultiAnswersVQADataset
 import json
 
 
-class VizWizVQADataset(BaseVQADataset):
-    _multi_answers = True
-
+class VizWizVQADataset(BaseMultiAnswersVQADataset):
     def load_data(self):
         annotations = json.load(open(f"{self.data_root}/{self.split}_vqa.json", "r"))
         for ann in annotations:

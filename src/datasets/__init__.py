@@ -1,14 +1,24 @@
 from src.datasets.vqa.vizwiz import VizWizVQADataset
-from src.datasets.vqa.science_qa import ScienceQADataset
+from src.datasets.vqa.science_qa import ScienceQATrainDataset, ScienceQAEvalDataset
 from src.datasets.vqa.text_vqa import TextVQADataset
 
 
 DATASET_DICT = {
-    "VizWiz": VizWizVQADataset,
-    "ScienceQA": ScienceQADataset,
-    "TextVQA": TextVQADataset,
+    "VizWiz": {
+        "train": VizWizVQADataset,
+        "eval": VizWizVQADataset,
+    },
+    "ScienceQA": {
+        "train": ScienceQATrainDataset,
+        "eval": ScienceQAEvalDataset,
+    },
+    "TextVQA": {
+        "train": TextVQADataset,
+        "eval": TextVQADataset,
+    },
 }
 
 
-def get_dataset(config, split):
-    return DATASET_DICT[config.dataset.name](config, split)
+def get_dataset(config, split_type):
+    split_config = config.dataset.split.get(split_type, None)
+    return DATASET_DICT[config.dataset.name][split_type](config, split_config["name"])
