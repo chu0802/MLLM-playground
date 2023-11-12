@@ -7,7 +7,7 @@ class BaseTask:
         self.prompt = ""
 
     def train_step(self, model, batch):
-        output = model(batch["image"], batch["question"], self.prompt)
+        output = model(batch)
         loss_dict = {}
         for k, v in output.items():
             if "loss" in k:

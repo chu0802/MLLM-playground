@@ -15,7 +15,6 @@ class Blip2(BaseModel):
         self.vis_processors, _ = load_preprocess(cfg.preprocess)
 
     def train(self):
-        self.model.query_tokens.train()
         self.model.Qformer.train()
         self.model.t5_proj.train()
 
@@ -56,16 +55,18 @@ class Blip2(BaseModel):
         ).to(self.device)
         return images
 
-    def foward(self, images, questions, answers):
-        images = self.parse_images(images)
+    # TODO: move this procedure to dataset
+    def forward(self, batch):
+        images = self.parse_images(batch["image"])
+        samples = {
+            "image": images,
+            "text_input": batch["question"],
+            "text_output": batch["answers"],
+        }
 
-        return self.model(
-            samples={
-                "image": images,
-                "text_input": questions,
-                "text_output": answers,
-            }
-        )
+        if "n_answers" in batch:
+            samples["n_answers"] = batch["n_answers"]
+        return self.model(samples=samples)
 
     @torch.no_grad()
     def generate(

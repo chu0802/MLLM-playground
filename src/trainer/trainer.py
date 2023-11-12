@@ -7,6 +7,7 @@ from src.trainer.lr_scheduler import get_lr_scheduler
 from src.utils.download import load_checkpoint
 import torch
 import logging
+import wandb
 
 
 class Trainer:
@@ -63,7 +64,6 @@ class Trainer:
         save_obj = {
             "model": state_dict,
             "optimizer": self.optimizer.state_dict(),
-            "config": self.config.to_dict(),
             "epoch": epoch,
         }
 
@@ -105,10 +105,26 @@ class Trainer:
         return score
 
     def train(self):
-        with tqdm(total=self.config.max_epoch * len(self.train_loader)) as pbar:
+        self.model.train()
+        with tqdm(total=self.max_epoch * len(self.train_loader)) as pbar:
             for epoch in range(self.max_epoch):
-                for batch in self.train_loader:
-                    train_output = self.task.train_step(self.model, batch)
+                for i, batch in enumerate(self.train_loader):
+                    loss, loss_dict = self.task.train_step(self.model, batch)
+
+                    self.lr_scheduler.step(cur_epoch=epoch, cur_step=i)
+
+                    if i % 50 == 0:
+                        wandb.log(
+                            {
+                                "lr": self.lr,
+                                "loss": loss.item(),
+                            }
+                        )
+
+                    loss.backward()
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+
                     pbar.update(1)
 
                 self.save(epoch)

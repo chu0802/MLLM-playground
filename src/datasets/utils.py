@@ -2,6 +2,24 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from src.datasets import get_dataset
+from itertools import chain
+from functools import partial
+from collections import defaultdict
+
+
+def default_train_collater(batch, multi_answers=False):
+    return_dict = defaultdict(list)
+
+    for key in batch[0]:
+        for dict in batch:
+            if key in ["answers", "weights"]:
+                return_dict[key] += dict[key]
+            else:
+                return_dict[key].append(dict[key])
+
+    if multi_answers:
+        return_dict["n_answers"] += [len(dict["answers"]) for dict in batch]
+    return return_dict
 
 
 def build_dataloader(
@@ -20,9 +38,7 @@ def build_dataloader(
         pin_memory=pin_memory,
         shuffle=shuffle,
         drop_last=drop_last,
-        collate_fn=lambda batch: {
-            key: [dict[key] for dict in batch] for key in batch[0]
-        },
+        collate_fn=partial(default_train_collater, multi_answers=dataset.multi_answers),
     )
 
 
