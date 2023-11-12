@@ -14,11 +14,16 @@ class ScienceQADataset(BaseMCQCustomDataset):
             self.download_dataset()
         self.load_data()
 
-    def load_data(self):
+    def load_data(self, train=False):
         annotations = json.load((self.data_root / f"{self.split}_anns.json").open("r"))
         for ann in annotations:
+            question = (
+                ann["question"].split("Options")[0].strip()
+                if train
+                else ann["question"]
+            )
             self.image_path_list.append((self.data_root / ann["image_path"]).as_posix())
-            self.question_list.append(ann["question"])
+            self.question_list.append(question)
             self.answer_weight_list.append(self.parse_answer(ann["answer"]))
             self.direct_answer_list.append(ann["direct_answer"])
 
@@ -51,6 +56,9 @@ class ScienceQADataset(BaseMCQCustomDataset):
 
 
 class ScienceQATrainDataset(ScienceQADataset):
+    def load_data(self, train=True):
+        return super().load_data(train)
+
     def __getitem__(self, idx):
         question = self.question_list[idx]
         answer = self.direct_answer_list[idx]
