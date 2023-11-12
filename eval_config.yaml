@@ -1,19 +1,20 @@
 model:
   name: Blip2
-  model_path: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth
+  # model_path: https://storage.googleapis.com/sfr-vision-language-research/LAVIS/models/BLIP2/blip2_pretrained_flant5xl.pth
+  model_path: ./output/Blip2/ScienceQA/20231112142433/checkpoint_6.pth
   config_path: ./src/models/blip2/config.yaml
 
 dataset:
   root: "/mnt/data/lvlm"
   split:
     eval:
-      name: "val"
+      name: "test"
       batch_size: 32
       shuffle: False
       drop_last: False
       num_workers: 4
       pin_memory: True
-  name: TextVQA
+  name: ScienceQA
   sample_num: -1
   sample_seed: 1102
 task:

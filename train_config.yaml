@@ -8,15 +8,15 @@ dataset:
   split:
     train:
       name: "train"
-      batch_size: 4
+      batch_size: 8
       shuffle: True
       drop_last: True
     eval:
-      name: "val"
-      batch_size: 32
+      name: "test"
+      batch_size: 16
       shuffle: False
       drop_last: False
-  name: TextVQA
+  name: ScienceQA
   sample_num: -1
   sample_seed: 1102
   num_workers: 4
