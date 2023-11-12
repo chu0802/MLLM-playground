@@ -73,3 +73,4 @@ class BaseMultiAnswersVQADataset(BaseVQADataset):
     def __getitem__(self, idx):
         samples = super().__getitem__(idx)
         samples["n_answers"] = len(samples["answers"])
+        return samples

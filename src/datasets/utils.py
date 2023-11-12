@@ -3,8 +3,6 @@ import torch
 from torch.utils.data import DataLoader
 from src.datasets import get_dataset
 from itertools import chain
-from functools import partial
-from collections import defaultdict
 
 
 def default_collater(batch):
@@ -78,6 +76,6 @@ if __name__ == "__main__":
 
     config = get_config()
     dataloaders = get_dataloaders(config)
-    for batch in dataloaders["train"]:
+    for batch in dataloaders["eval"]:
         print(batch)
         pass
