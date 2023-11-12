@@ -6,11 +6,11 @@ model:
 dataset:
   root: "/mnt/data/lvlm"
   split:
-    # train:
-    #   name: "train"
-    #   batch_size: 16
-    #   shuffle: True
-    #   drop_last: True
+    train:
+      name: "train"
+      batch_size: 4
+      shuffle: True
+      drop_last: True
     eval:
       name: "val"
       batch_size: 32
@@ -19,7 +19,6 @@ dataset:
   name: TextVQA
   sample_num: -1
   sample_seed: 1102
-  batch_size: 32
   num_workers: 4
   pin_memory: True
 
