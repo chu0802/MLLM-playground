@@ -5,14 +5,19 @@ from src.datasets import get_dataset
 from itertools import chain
 
 
-def default_collater(batch):
+def default_train_collater(batch):
     return_dict = {key: [dict[key] for dict in batch] for key in batch[0]}
     return_dict["answers"] = list(chain(*return_dict["answers"]))
     return return_dict
 
 
+def default_eval_collater(batch):
+    return {key: [dict[key] for dict in batch] for key in batch[0]}
+
+
 def build_dataloader(
     dataset,
+    collater,
     batch_size=8,
     num_workers=4,
     pin_memory=True,
@@ -27,7 +32,7 @@ def build_dataloader(
         pin_memory=pin_memory,
         shuffle=shuffle,
         drop_last=drop_last,
-        collate_fn=default_collater,
+        collate_fn=collater,
     )
 
 
@@ -39,7 +44,12 @@ def get_dataloaders(config):
             config.dataset.sample_num,
             config.dataset.sample_seed,
         )
-        dataloaders[split_type] = build_dataloader(dataset, **split_config_dict)
+        collater = (
+            default_train_collater if split_type == "train" else default_eval_collater
+        )
+        dataloaders[split_type] = build_dataloader(
+            dataset, collater, **split_config_dict
+        )
     return dataloaders
 
 
