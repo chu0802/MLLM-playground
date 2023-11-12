@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 class ScienceQADataset(BaseVQADataset):
+    _multi_answers = False
+
     def __init__(self, config):
         self.image_path_list = []
         self.question_list = []
@@ -28,7 +30,7 @@ class ScienceQADataset(BaseVQADataset):
         for ann in annotations:
             self.image_path_list.append((self.data_root / ann["image_path"]).as_posix())
             self.question_list.append(ann["question"])
-            self.answer_list.append(ann["answer"])
+            self.answer_weight_list.append(self.parse_answer(ann["answer"]))
 
     def download_dataset(self):
         data = datasets.load_dataset("derek-thomas/ScienceQA", self.split)

@@ -3,6 +3,8 @@ import json
 
 
 class TextVQADataset(BaseVQADataset):
+    _multi_answers = True
+
     def load_data(self):
         data = json.load(
             open(f"{self.data_root}/TextVQA_0.5.1_{self.split}.json", "r")
@@ -14,4 +16,4 @@ class TextVQADataset(BaseVQADataset):
         for d in data:
             self.image_path_list.append((image_dir / f"{d['image_id']}.jpg").as_posix())
             self.question_list.append(d["question"])
-            self.answer_list.append(d["answers"])
+            self.answer_weight_list.append(self.parse_answer(d["answers"]))
