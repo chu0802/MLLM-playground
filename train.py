@@ -23,9 +23,9 @@ def main(config):
     os.environ["CUDA_VISIBLE_DEVICES"] = str(config.task.device)
 
     task = get_task(config)
-    model = get_model(config)
     dataloaders = get_dataloaders(config)
     evaluater = get_evaluater(config.dataset.name)
+    model = get_model(config)
 
     trainer = Trainer(task, model, dataloaders, config)
 
