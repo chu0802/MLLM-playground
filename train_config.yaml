@@ -19,8 +19,6 @@ dataset:
   name: ScienceQA
   sample_num: -1
   sample_seed: 1102
-  num_workers: 4
-  pin_memory: True
 
 task:
   name: vqa
