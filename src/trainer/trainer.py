@@ -50,11 +50,12 @@ class Trainer:
         return self.dataloaders["eval"]
 
     def save(self, epoch):
+        # avoid the name to be prefixed with "model."
         param_grad_dict = {
-            k: v.requires_grad for (k, v) in self.model.named_parameters()
+            k: v.requires_grad for (k, v) in self.model.model.named_parameters()
         }
 
-        state_dict = self.model.state_dict()
+        state_dict = self.model.model.state_dict()
 
         for k in list(state_dict.keys()):
             if k in param_grad_dict.keys() and not param_grad_dict[k]:
