@@ -8,11 +8,13 @@ from omegaconf import OmegaConf
 class Blip2(BaseModel):
     def __init__(self, config):
         super().__init__()
-        self.model = Blip2T5Instruct()
-        self.model.load_from_pretrained(config.model.model_path)
+        model_default_config = OmegaConf.load(config.model.config_path)
+        self.model = Blip2T5Instruct(**dict(model_default_config.model))
 
-        cfg = OmegaConf.load(config.model.config_path)
-        self.vis_processors, _ = load_preprocess(cfg.preprocess)
+        self.vis_processors, self.text_processors = load_preprocess(
+            model_default_config.preprocess
+        )
+        self.model.load_from_pretrained(config.model.model_path)
 
     def train(self):
         self.model.Qformer.train()
@@ -55,12 +57,16 @@ class Blip2(BaseModel):
         ).to(self.device)
         return images
 
+    def parse_questions(self, questions, mode="train"):
+        return [self.text_processors[mode](question) for question in questions]
+
     # TODO: move this procedure to dataset
     def forward(self, batch):
         images = self.parse_images(batch["image"])
+        questions = self.parse_questions(batch["question"])
         samples = {
             "image": images,
-            "text_input": batch["question"],
+            "text_input": questions,
             "text_output": batch["answers"],
         }
 
@@ -70,7 +76,14 @@ class Blip2(BaseModel):
 
     @torch.no_grad()
     def generate(
-        self, images, questions, max_len=30, min_len=1, num_beams=5, prompt=None
+        self,
+        images,
+        questions,
+        max_len=30,
+        min_len=1,
+        num_beams=5,
+        length_penalty=-1,
+        prompt=None,
     ):
         images = self.parse_images(images)
         input_prompts = self.parse_text_input(questions, prompt)
@@ -80,6 +93,7 @@ class Blip2(BaseModel):
             max_length=max_len,
             min_length=min_len,
             num_beams=num_beams,
+            length_penalty=length_penalty,
         )
 
         return answer
