@@ -21,8 +21,13 @@ class MrrEvaluater(BaseEvaluater):
 
 class ScienceQAEvaluater(BaseEvaluater):
     def evaluate(self, answer, gt_answers):
-        gt_choice, gt_direct_answer = gt_answers.split(") ")
-        return equivalent(answer, gt_choice) or has_word(answer, gt_direct_answer)
+        gt_choice, gt_direct_answer = gt_answers[0].split(") ")
+        pred_direct_answer = answer.split(") ")[-1]
+        return (
+            equivalent(answer, gt_choice)
+            or has_word(answer, gt_direct_answer)
+            or has_word(gt_direct_answer, pred_direct_answer)
+        )
 
 
 class VQAV2Evaluater(BaseEvaluater):
