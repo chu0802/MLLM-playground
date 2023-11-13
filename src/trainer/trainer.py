@@ -5,6 +5,7 @@ import datetime
 from src.trainer.optimizer import get_optimizer
 from src.trainer.lr_scheduler import get_lr_scheduler
 from src.utils.download import load_checkpoint
+from src.utils.config import dump_config
 import torch
 import logging
 import wandb
@@ -32,6 +33,8 @@ class Trainer:
             / timestamp
         )
         self.output_dir.mkdir(parents=True, exist_ok=True)
+
+        dump_config(self.config, self.output_dir / "config.json")
 
     @property
     def max_epoch(self):

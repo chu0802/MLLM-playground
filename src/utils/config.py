@@ -1,5 +1,6 @@
 import argparse
 from omegaconf import OmegaConf
+import json
 
 
 class Config:
@@ -43,6 +44,14 @@ def flatten_config(d, parent_key="", sep="."):
 
 def get_config(train=True):
     return Config(parse_args()).config
+
+
+def dump_config(config, path, flatten=False):
+    dict_config = OmegaConf.to_container(config)
+    if flatten:
+        dict_config = flatten_config(dict_config)
+    with open(path, "w") as f:
+        json.dump(dict_config, f, indent=4)
 
 
 if __name__ == "__main__":
