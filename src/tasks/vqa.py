@@ -28,12 +28,13 @@ class VQATask(BaseTask):
             )
         ]
 
-    def _eval_metrics(self, results, evaluater):
+    def _eval_metrics(self, results, evaluater, split=False):
         correct = 0
         for res in results:
             eval_res = evaluater.evaluate(res["pred_answer"], res["answers"])
             res["correct"] = eval_res
             correct += eval_res
-
+        if split:
+            return correct, len(results)
         score = correct / len(results)
         return score

@@ -95,13 +95,22 @@ class Trainer:
         with result_path.open("w") as f:
             f.write(json.dumps({"result": score}, indent=4))
 
-    def evaluate(self, evaluater):
+    def evaluate(self, evaluater, report_dynamic_acc=False):
         self.model.eval()
 
         results = []
-        for batch in tqdm(self.eval_loader, desc="Evaluation"):
+        num_correct, num_total = 0, 0
+        pbar = tqdm(self.eval_loader, desc="Evaluation")
+        for batch in pbar:
             eval_output = self.task.evaluate_step(self.model, batch)
             results += eval_output
+            if report_dynamic_acc:
+                nc, nt = self.task._eval_metrics(eval_output, evaluater, split=True)
+                num_correct += nc
+                num_total += nt
+                pbar.set_postfix_str(
+                    "accuracy: %4.2f%%" % (100 * num_correct / num_total)
+                )
         score = self.task._eval_metrics(results, evaluater)
 
         self.dump_results(results, score)
