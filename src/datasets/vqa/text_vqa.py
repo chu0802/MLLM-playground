@@ -14,7 +14,7 @@ class TextVQADataset(BaseMultiAnswersVQADataset):
         for d in data:
             self.image_path_list.append((image_dir / f"{d['image_id']}.jpg").as_posix())
             self.question_list.append(d["question"])
-            self.answer_weight_list.append(self.parse_answer(d["answers"]))
+            self.answer_weight_list.append({"answers": d["answers"]})
 
 
 if __name__ == "__main__":

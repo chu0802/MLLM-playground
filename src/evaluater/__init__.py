@@ -8,8 +8,9 @@ __all__ = [
 
 EVALUATER_DICT = {
     "ScienceQA": ScienceQAEvaluater,
-    "VizWiz": VQAV2Evaluater,
-    "OKVQA": VQAV2Evaluater,
+    # "VizWiz": VQAV2Evaluater,
+    # "OKVQA": VQAV2Evaluater,
+    # "TextVQA": VQAV2Evaluater,
 }
 
 

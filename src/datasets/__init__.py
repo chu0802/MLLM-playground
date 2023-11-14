@@ -1,12 +1,12 @@
-from src.datasets.vqa.vizwiz import VizWizVQADataset
+from src.datasets.vqa.vizwiz import VizWizVQATrainDataset, VizWizVQAEvalDataset
 from src.datasets.vqa.science_qa import ScienceQATrainDataset, ScienceQAEvalDataset
 from src.datasets.vqa.text_vqa import TextVQADataset
 from src.datasets.vqa.ok_vqa import OKVQATrainDataset, OKVQAEvalDataset
 
 DATASET_DICT = {
     "VizWiz": {
-        "train": VizWizVQADataset,
-        "eval": VizWizVQADataset,
+        "train": VizWizVQATrainDataset,
+        "eval": VizWizVQAEvalDataset,
     },
     "ScienceQA": {
         "train": ScienceQATrainDataset,
