@@ -106,7 +106,7 @@ class Trainer:
             eval_output = self.task.evaluate_step(self.model, batch)
             results += eval_output
 
-            total_score += self.task._eval_metrics(eval_output, evaluater, split=True)
+            total_score += self.task._eval_metrics(eval_output, evaluater)
             pbar.set_postfix_str("accuracy: %4.2f%%" % (100 * total_score.get_acc()))
 
         self.dump_results(results, total_score.get_acc())
