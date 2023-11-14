@@ -16,7 +16,7 @@ dataset:
       batch_size: 16
       shuffle: False
       drop_last: False
-  name: TextVQA
+  name: OKVQA
   sample_num: -1
   sample_seed: 1102
 
