@@ -1,6 +1,6 @@
 from src.datasets.vqa.vizwiz import VizWizVQATrainDataset, VizWizVQAEvalDataset
 from src.datasets.vqa.science_qa import ScienceQATrainDataset, ScienceQAEvalDataset
-from src.datasets.vqa.text_vqa import TextVQADataset
+from src.datasets.vqa.text_vqa import TextVQATrainDataset, TextVQAEvalDataset
 from src.datasets.vqa.ok_vqa import OKVQATrainDataset, OKVQAEvalDataset
 
 DATASET_DICT = {
@@ -13,8 +13,8 @@ DATASET_DICT = {
         "eval": ScienceQAEvalDataset,
     },
     "TextVQA": {
-        "train": TextVQADataset,
-        "eval": TextVQADataset,
+        "train": TextVQATrainDataset,
+        "eval": TextVQAEvalDataset,
     },
     "OKVQA": {
         "train": OKVQATrainDataset,
