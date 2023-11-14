@@ -30,7 +30,7 @@ def main(config):
     trainer = Trainer(task, model, dataloaders, config)
 
     trainer.train()
-    score = trainer.evaluate(evaluater, report_dynamic_acc=True)
+    score = trainer.evaluate(evaluater)
 
     logging.info(
         f"Model: {config.model.name} | Dataset: {config.dataset.name} | Result: {score}"

@@ -6,6 +6,7 @@ from src.trainer.optimizer import get_optimizer
 from src.trainer.lr_scheduler import get_lr_scheduler
 from src.utils.download import load_checkpoint
 from src.utils.config import dump_config
+from src.utils.metrics import AccMeter
 import torch
 import logging
 import wandb
@@ -95,27 +96,22 @@ class Trainer:
         with result_path.open("w") as f:
             f.write(json.dumps({"result": score}, indent=4))
 
-    def evaluate(self, evaluater, report_dynamic_acc=False):
+    def evaluate(self, evaluater):
         self.model.eval()
 
         results = []
-        num_correct, num_total = 0, 0
+        total_score = AccMeter()
         pbar = tqdm(self.eval_loader, desc="Evaluation")
         for batch in pbar:
             eval_output = self.task.evaluate_step(self.model, batch)
             results += eval_output
-            if report_dynamic_acc:
-                nc, nt = self.task._eval_metrics(eval_output, evaluater, split=True)
-                num_correct += nc
-                num_total += nt
-                pbar.set_postfix_str(
-                    "accuracy: %4.2f%%" % (100 * num_correct / num_total)
-                )
-        score = self.task._eval_metrics(results, evaluater)
 
-        self.dump_results(results, score)
+            total_score += self.task._eval_metrics(eval_output, evaluater, split=True)
+            pbar.set_postfix_str("accuracy: %4.2f%%" % (100 * total_score.get_acc()))
 
-        return score
+        self.dump_results(results, total_score.get_acc())
+
+        return total_score.get_acc()
 
     def train(self):
         self.model.train()
