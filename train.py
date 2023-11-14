@@ -38,4 +38,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main(get_config(train=True))
+    main(get_config(mode="train"))

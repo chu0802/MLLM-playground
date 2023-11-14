@@ -13,10 +13,10 @@ class Config:
         return OmegaConf.from_dotlist([] if opts is None else opts)
 
 
-def parse_args():
+def parse_args(mode="eval"):
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--cfg-path", default="eval_config.yaml", help="path to configuration file."
+        "--cfg-path", default=f"{mode}_config.yaml", help="path to configuration file."
     )
     parser.add_argument(
         "--options",
@@ -42,8 +42,8 @@ def flatten_config(d, parent_key="", sep="."):
     return dict(items)
 
 
-def get_config(train=True):
-    return Config(parse_args()).config
+def get_config(mode="eval"):
+    return Config(parse_args(mode=mode)).config
 
 
 def dump_config(config, path, flatten=False):

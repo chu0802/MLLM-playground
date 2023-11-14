@@ -36,4 +36,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main(get_config())
+    main(get_config(mode="eval"))
