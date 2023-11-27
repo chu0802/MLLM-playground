@@ -1,7 +1,6 @@
 import os
 
 from src.utils.config import get_config
-from src.tasks import get_task
 import logging
 import sys
 from src.datasets import get_dataset
@@ -21,14 +20,13 @@ def main(config):
     logging.info("Start Inference")
     os.environ["CUDA_VISIBLE_DEVICES"] = str(config.task.device)
 
-    task = get_task(config)
     dataloaders = get_dataloaders(config)
     evaluater = get_evaluater(config.dataset.name)
     model = get_model(config)
 
-    trainer = Trainer(task, model, dataloaders, config)
+    trainer = Trainer(model, dataloaders, evaluater, config)
 
-    score = trainer.evaluate(evaluater)
+    score = trainer.evaluate()
 
     logging.info(
         f"Model: {config.model.name} | Dataset: {config.dataset.name} | Result: {score}"

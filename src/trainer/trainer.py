@@ -13,10 +13,10 @@ import wandb
 
 
 class Trainer:
-    def __init__(self, task, model, dataloaders, config):
-        self.task = task
+    def __init__(self, model, dataloaders, evaluater, config):
         self.model = model
         self.dataloaders = dataloaders
+        self.evaluater = evaluater
         self.config = config
 
         self.is_train = "train" in config.dataset.split
@@ -96,29 +96,37 @@ class Trainer:
         with result_path.open("w") as f:
             f.write(json.dumps({"result": score}, indent=4))
 
-    def evaluate(self, evaluater):
+    def evaluate(self):
         self.model.eval()
 
         results = []
         total_score = AccMeter()
         pbar = tqdm(self.eval_loader, desc="Evaluation")
         for batch in pbar:
-            eval_output = self.task.evaluate_step(self.model, batch)
+            eval_output = self.evaluater.evaluate_step(self.model, batch)
             results += eval_output
 
-            total_score += self.task._eval_metrics(eval_output, evaluater)
+            total_score += self.evaluater.get_eval_metrics(eval_output)
             pbar.set_postfix_str("accuracy: %4.2f%%" % (100 * total_score.get_acc()))
 
         self.dump_results(results, total_score.get_acc())
 
         return total_score.get_acc()
 
+    def train_step(self, batch):
+        output = self.model(batch)
+        loss_dict = {}
+        for k, v in output.items():
+            if "loss" in k:
+                loss_dict[k] = v
+        return output["loss"], loss_dict
+
     def train(self):
         self.model.train()
         with tqdm(total=self.max_epoch * len(self.train_loader)) as pbar:
             for epoch in range(self.max_epoch):
                 for i, batch in enumerate(self.train_loader):
-                    loss, loss_dict = self.task.train_step(self.model, batch)
+                    loss, loss_dict = self.train_step(self.model, batch)
 
                     self.lr_scheduler.step(cur_epoch=epoch, cur_step=i)
 
@@ -137,3 +145,8 @@ class Trainer:
                     pbar.update(1)
 
                 self.save(epoch)
+
+
+class KnowledgeDistillationTrainer(Trainer):
+    def __init__(self, model, dataloaders, evaluater, config):
+        super.__init__(model, dataloaders, evaluater, config)
